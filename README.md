@@ -23,10 +23,13 @@ Traffic generation: For every episode, 1000 cars are created. The car arrival ti
 Agent ( Traffic Signal Control System - TLCS):
 
 State: discretization of oncoming lanes into presence cells, which identify the presence or absence of at least 1 vehicle inside them. There are 20 cells per arm. 10 of them are placed along the left-most lane while the other 10 are placed in the other three lanes. 80 cells in the whole intersection.
+
 Action: choice of the traffic light phase from 4 possible predetermined phases, described below. Every phase has a duration of 10 seconds. When the phase changes, a yellow phase of 4 seconds is activated.
 North-South Advance: green for lanes in the north and south arm dedicated to turning right or going straight.
 North-South Left Advance: green for lanes in the north and south arm dedicated to turning left.
 East-West Advance: green for lanes in the east and west arm dedicated to turning right or going straight.
 East-West Left Advance: green for lanes in the east and west arm dedicated to turning left.
+
 Reward: change in cumulative waiting time between actions, where the waiting time of a car is the number of seconds spent with speed=0 since the spawn; cumulative means that every waiting time of every car located in an incoming lane is summed. When a car leaves an oncoming lane (i.e. crossed the intersection), its waiting time is no longer counted. Therefore this translates to a positive reward for the agent.
+
 Learning mechanism: the agent make use of the Q-learning equation Q(s,a) = reward + gamma • max Q'(s',a') to update the action values and a deep neural network to learn the state-action function. The neural network is fully connected with 80 neurons as input (the state), 5 hidden layers of 400 neurons each, and the output layers with 4 neurons representing the 4 possible actions. Also, an experience replay mechanism is implemented: the experience of the agent is stored in a memory and, at the end of each episode, multiple batches of randomized samples are extracted from the memory and used to train the neural network, once the action values have been updated with the Q-learning equation.
